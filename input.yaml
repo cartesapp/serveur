@@ -37,6 +37,8 @@ datasets:
   # Corse
   # Grand Est
   # Haut-de-France
+  - slug: arrets-horaires-et-parcours-theoriques-gtfs-du-reseau-routier-regional-de-transport-interurbain-80-somme
+    prefix: fr-hdf-somme
   # Ile-de-France
   - slug: reseau-urbain-et-interurbain-dile-de-france-mobilites
     prefix: fr-idf
