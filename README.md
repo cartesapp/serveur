@@ -156,3 +156,5 @@ Regardez si ça marche
 ```
 pm2 monit
 ```
+
+La disponibilité des différents services est disponible [ici](https://cava.cartes.app/status/cartes)
