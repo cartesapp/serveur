@@ -716,7 +716,7 @@ app.get(
   '/update-tiles/:zone/:givenSecretKey/:noDownload?',
   async (req, res) => {
     const { givenSecretKey, zone, noDownload = false } = req.params
-    if (secretKey !== secretKey) {
+    if (givenSecretKey !== secretKey) {
       return res
         .status(401)
         .send("Wrong auth secret key, you're not allowed to do that")
@@ -753,6 +753,28 @@ app.get(
     }
   }
 )
+app.get('/update-photon/:givenSecretKey', async (req, res) => {
+  const { givenSecretKey } = req.params
+  if (givenSecretKey !== secretKey) {
+    return res
+      .status(401)
+      .send("Wrong auth secret key, you're not allowed to do that")
+  }
+  try {
+    // https://github.com/komoot/photon?tab=readme-ov-file#installation
+    const { stdout, stderr } = await exec(
+      'wget -O - https://download1.graphhopper.com/public/photon-db-latest.tar.bz2 | pbzip2 -cd | tar x'
+    )
+    console.log('-------------------------------')
+    console.log('Download photon database OK')
+    console.log('stdout:', stdout)
+    console.log('stderr:', stderr)
+    return res.send({ ok: true })
+  } catch (e) {
+    console.log("Couldn't update photon.", e)
+    res.send({ ok: false })
+  }
+})
 
 app.listen(port, () => {
   console.log(`Cartes.app GTFS server listening on port ${port}`)
