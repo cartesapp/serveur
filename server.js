@@ -25,7 +25,7 @@ import {
 } from 'gtfs'
 import util from 'util'
 import { buildAgencySymbolicGeojsons } from './buildAgencyGeojsons.js'
-import { updateFranceTiles, updatePlanetTiles } from './tiles.js'
+import { liveExec, updateFranceTiles, updatePlanetTiles } from './tiles.js'
 import {
   areDisjointBboxes,
   bboxArea,
@@ -767,13 +767,21 @@ app.get('/update-photon/:givenSecretKey', async (req, res) => {
   }
   try {
     // https://github.com/komoot/photon?tab=readme-ov-file#installation
+    /*
     const { stdout, stderr } = await exec(
-      'cd ~ && wget -O - https://download1.graphhopper.com/public/photon-db-latest.tar.bz2 | pbzip2 -cd | tar x'
+      'cd ~ && wget -O -  | pbzip2 -cd | tar x'
     )
+	*/
+    const url = `https://download1.graphhopper.com/public/photon-db-latest.tar.bz2`
+    await download(url)
+    /*
+    await liveExec(
+      ''
+    )
+	*/
+
     console.log('-------------------------------')
-    console.log('Download photon database OK')
-    console.log('stdout:', stdout)
-    console.log('stderr:', stderr)
+    console.log('✅ Downloaded photon database 🌍️')
     return res.send({ ok: true })
   } catch (e) {
     console.log("Couldn't update photon.", e)

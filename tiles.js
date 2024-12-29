@@ -22,7 +22,7 @@ const dryExec = async (text) => {
 }
 
 const log = (...messages) => console.log(...messages)
-const liveExec = async (command) => {
+export const liveExec = async (command) => {
   const promise = new Promise((resolve, reject) => {
     const child = spawn(command, [], { shell: true })
 
