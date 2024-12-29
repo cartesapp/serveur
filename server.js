@@ -25,7 +25,12 @@ import {
 } from 'gtfs'
 import util from 'util'
 import { buildAgencySymbolicGeojsons } from './buildAgencyGeojsons.js'
-import { liveExec, updateFranceTiles, updatePlanetTiles } from './tiles.js'
+import {
+  download,
+  liveExec,
+  updateFranceTiles,
+  updatePlanetTiles,
+} from './tiles.js'
 import {
   areDisjointBboxes,
   bboxArea,

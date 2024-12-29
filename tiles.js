@@ -127,7 +127,7 @@ function createProgressBar() {
   })
 }
 
-function download(url) {
+export function download(url) {
   const mpb = createProgressBar()
   return new Promise(async (resolve, reject) => {
     const filename = url.split('/').slice(-1)[0]
