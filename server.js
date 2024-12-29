@@ -768,7 +768,7 @@ app.get('/update-photon/:givenSecretKey', async (req, res) => {
   try {
     // https://github.com/komoot/photon?tab=readme-ov-file#installation
     const { stdout, stderr } = await exec(
-      'wget -O - https://download1.graphhopper.com/public/photon-db-latest.tar.bz2 | pbzip2 -cd | tar x'
+      'cd ~ && wget -O - https://download1.graphhopper.com/public/photon-db-latest.tar.bz2 | pbzip2 -cd | tar x'
     )
     console.log('-------------------------------')
     console.log('Download photon database OK')
