@@ -680,6 +680,17 @@ app.get('/update/:givenSecretKey', async (req, res) => {
     console.log('stdout:', stdout)
     console.log('stderr:', stderr)
 
+    // Motis is incredibly fast compared to node-GTFS
+    // Hence do it first now that the data is up to date
+    // TODO sudo... https://unix.stackexchange.com/questions/606452/allowing-user-to-run-systemctl-systemd-services-without-password/606476#606476
+    const { stdout2, stderr2 } = await exec(
+      'sudo systemctl restart motis.service'
+    )
+    console.log('-------------------------------')
+    console.log('Restart Motis OK')
+    console.log('stdout:', stdout2)
+    console.log('stderr:', stderr2)
+
     const newDbName = dateHourMinutes()
     cache.set('dbName', newDbName)
     await parseGTFS(newDbName)
@@ -703,15 +714,6 @@ app.get('/update/:givenSecretKey', async (req, res) => {
     console.log('Removed older dbs')
     console.log('stdout:', stdout4)
     console.log('stderr:', stderr4)
-
-    // TODO sudo... https://unix.stackexchange.com/questions/606452/allowing-user-to-run-systemctl-systemd-services-without-password/606476#606476
-    const { stdout2, stderr2 } = await exec(
-      'sudo systemctl restart motis.service'
-    )
-    console.log('-------------------------------')
-    console.log('Restart Motis OK')
-    console.log('stdout:', stdout2)
-    console.log('stderr:', stderr2)
 
     closeDb(db)
     console.log('Done updating 😀')
