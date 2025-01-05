@@ -150,7 +150,7 @@ const parseGTFS = async (newDbName) => {
   config.sqlitePath = 'db/' + newDbName
   await importGtfs(config)
   await updateGtfsRealtime(config)
-  console.timeLog('Parse GTFS')
+  console.timeEnd('Parse GTFS')
   return "C'est bon !"
 }
 
@@ -434,7 +434,7 @@ WHERE stop_id = ? AND departure_time > '${from}' AND departure_time < '${to}' AN
       .all(ids)
 
     closeDb(db)
-    console.timeLog(requestText)
+    console.timeEnd(requestText)
     return res.json(stopTimes.map(rejectNullValues))
   } catch (e) {
     console.error(e)
@@ -449,7 +449,8 @@ app.get('/stopTimes/:ids/:day?', (req, res) => {
 
     const db = openDb(config)
     const results = ids.map((id) => {
-      console.time('stoptimes')
+      const timeKey = 'stoptimes ' + id
+      console.time(timeKey)
       const stops = getStoptimes({
         stop_id: [id],
       })
@@ -474,8 +475,9 @@ app.get('/stopTimes/:ids/:day?', (req, res) => {
           .length,
       }))
 
-      console.timeLog('stoptimes')
-      console.time('shapes')
+      console.timeEnd(timeKey)
+      const shapesTimeKey = 'shapes ' + id
+      console.time(shapesTimeKey)
       const features = routes
         .map((route) => [
           ...getShapesAsGeoJSON({
@@ -486,7 +488,7 @@ app.get('/stopTimes/:ids/:day?', (req, res) => {
           }).features,
         ])
         .flat()
-      console.timeLog('shapes')
+      console.timeEnd(shapesTimeKey)
 
       const result = {
         stops: stops.map(rejectNullValues),
@@ -779,11 +781,10 @@ app.get('/update-photon/:givenSecretKey', async (req, res) => {
 	*/
     const url = `https://download1.graphhopper.com/public/photon-db-latest.tar.bz2`
     await download(url)
-    /*
+
     await liveExec(
-      ''
+      'mv photon-db-latest.tar.bz2 ~/ && cd ~ / && pbzip2 -cd photon-db-latest.tar.bz2 | tar x'
     )
-	*/
 
     console.log('-------------------------------')
     console.log('✅ Downloaded photon database 🌍️')
