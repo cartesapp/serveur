@@ -19,7 +19,9 @@ export default function placeMapRoute(app) {
       const file = fs.readFileSync(hash)
       if (file)
         return new Response(file, { headers: { 'content-type': 'image/png' } })
-    } catch (e) {}
+    } catch (e) {
+      console.log(e)
+    }
 
     const { stdout, stderr } = await exec(
       `xvfb-run -a ${userDir}/mbgl-render --style http://cartes.app/api/styles --output ${hash} -z ${zoom} -x ${lon} -y ${lat} -b ${bearing} -p ${pitch}` // && xdg-open out.png`
