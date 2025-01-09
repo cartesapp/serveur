@@ -17,8 +17,7 @@ export default function placeMapRoute(app) {
       placeMapDir + [zoom, lat, lon, bearing, pitch].join('-') + '.png'
     try {
       const file = fs.readFileSync(hash)
-      if (file)
-        return new Response(file, { headers: { 'content-type': 'image/png' } })
+      if (file) return res.sendFile(hash)
     } catch (e) {
       console.log(e)
     }
