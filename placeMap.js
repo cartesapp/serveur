@@ -19,7 +19,7 @@ export default function placeMapRoute(app) {
       const file = fs.readFileSync(hash)
       if (file) return res.sendFile(hash)
     } catch (e) {
-      console.log(e)
+      console.log('Caught', e)
     }
 
     const { stdout, stderr } = await exec(
