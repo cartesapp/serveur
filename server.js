@@ -375,7 +375,7 @@ app.get('/agencyBbox/:agency_id', async (req, res) => {
 app.get('/stop/:stop_id?', (req, res) => {
   try {
     const { stop_id } = req.params
-    console.log(`Requesting agency by id ${stop_id}`)
+    console.log(`Requesting stop by id ${stop_id}`)
     const db = openDb(config)
     res.json(getStops({ stop_id })[0])
 
