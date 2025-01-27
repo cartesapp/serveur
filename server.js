@@ -393,7 +393,7 @@ app.get('/immediateStopTimes/:ids/:day/:from/:to', (req, res) => {
       ids = rawIds.split('|')
 
     const requestText = `immediate stoptimes for day ${day} date ${from} up to ${to} and stops ${req.params.ids}`
-    console.time(requestText)
+    //console.time(requestText)
 
     //TODO this only works with calendarDates
     const stopTimes = db
@@ -409,7 +409,7 @@ WHERE stop_id = ? AND departure_time > '${from}' AND departure_time < '${to}' AN
       .all(ids)
 
     closeDb(db)
-    console.timeEnd(requestText)
+    //console.timeEnd(requestText)
     return res.json(stopTimes.map(rejectNullValues))
   } catch (e) {
     console.error(e)
@@ -425,7 +425,7 @@ app.get('/stopTimes/:ids/:day?', (req, res) => {
     const db = openDb(config)
     const results = ids.map((id) => {
       const timeKey = 'stoptimes ' + id
-      console.time(timeKey)
+      //console.time(timeKey)
       const stops = getStoptimes({
         stop_id: [id],
       })
@@ -450,9 +450,9 @@ app.get('/stopTimes/:ids/:day?', (req, res) => {
           .length,
       }))
 
-      console.timeEnd(timeKey)
+      //console.timeEnd(timeKey)
       const shapesTimeKey = 'shapes ' + id
-      console.time(shapesTimeKey)
+      //console.time(shapesTimeKey)
       const features = routes
         .map((route) => [
           ...getShapesAsGeoJSON({
@@ -463,7 +463,7 @@ app.get('/stopTimes/:ids/:day?', (req, res) => {
           }).features,
         ])
         .flat()
-      console.timeEnd(shapesTimeKey)
+      //console.timeEnd(shapesTimeKey)
 
       const result = {
         stops: stops.map(rejectNullValues),
@@ -609,7 +609,7 @@ app.get('/geoStops/:lat/:lon/:distance', (req, res) => {
 
     const { lat, lon, distance = 20 } = req.params
 
-    console.log('Will query stops for lat ', lat, ' and lon ', lon)
+    //console.log('Will query stops for lat ', lat, ' and lon ', lon)
 
     const results = getStops(
       {
