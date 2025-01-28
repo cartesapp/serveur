@@ -690,7 +690,7 @@ app.get('/update/:givenSecretKey', async (req, res) => {
     console.log(
       'Will build agency areas, long not optimized step for now, ~ 30 minutes for SNCF + STAR + TAN'
     )
-
+    //waiting to close makes all other routes unavailable because of multiple connections ?
     closeDb(oldDb)
     const db = openDb(config)
     buildAgencyAreas(db, cache, runtimeCache)
