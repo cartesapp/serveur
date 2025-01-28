@@ -22,17 +22,24 @@ export default function placeMapRoute(app) {
       console.log('Caught error generating ' + hash)
     }
 
-    const { stdout, stderr } = await exec(
-      `xvfb-run -a ${userDir}/mbgl-render --style http://cartes.app/api/styles --output ${hash} -z ${zoom} -x ${lon} -y ${lat} -b ${bearing} -p ${pitch}` // && xdg-open out.png`
-    )
+    try {
+      const { stdout, stderr } = await exec(
+        `xvfb-run -a ${userDir}/mbgl-render --style http://cartes.app/api/styles --output ${hash} -z ${zoom} -x ${lon} -y ${lat} -b ${bearing} -p ${pitch}` // && xdg-open out.png`
+      )
 
-    //    const newFile = fs.readFileSync(hash)
+      //    const newFile = fs.readFileSync(hash)
 
+      /*
     console.log('-------------------------------')
     console.log('maplibre place map generation')
     console.log('stdout:', stdout)
     console.log('stderr:', stderr)
+	*/
 
-    return res.sendFile(hash)
+      return res.sendFile(hash)
+    } catch (e) {
+      // we don't want to pollute logs here with non impacting maplibre errors
+      // TODO what should we return ? A default image of cartes.app
+    }
   })
 }
