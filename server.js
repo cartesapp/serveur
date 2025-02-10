@@ -148,13 +148,13 @@ app.get('/elections-legislatives-2024/:circo', (req, res) => {
 const port = process.env.PORT || 3001
 
 const parseGTFS = async (newDbName) => {
-  console.time('Parse GTFS')
+  //console.time('Parse GTFS')
   const config = await readConfig()
   console.log('will load GTFS files in node-gtfs')
   config.sqlitePath = 'db/' + newDbName
   await importGtfs(config)
   await updateGtfsRealtime(config)
-  console.timeEnd('Parse GTFS')
+  //console.timeEnd('Parse GTFS')
   return "C'est bon !"
 }
 
