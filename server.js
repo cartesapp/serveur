@@ -42,6 +42,7 @@ import {
 
 import placeMapRoute from './placeMap.js'
 
+// Probably disactivated because the API is not stable enough yet
 let cacheMiddleware = apicache.middleware
 
 export const exec = util.promisify(rawExec)
@@ -634,15 +635,6 @@ app.get('/geoStops/:lat/:lon/:distance', (req, res) => {
   } catch (error) {
     console.error(error)
   }
-})
-
-//parseGTFS(Math.random())
-
-/* Update the DB from the local GTFS files */
-app.get('/parse', async (req, res) => {
-  const alors = await parseGTFS(dateHourMinutes())
-
-  res.send(alors)
 })
 
 const secretKey = process.env.SECRET_KEY
