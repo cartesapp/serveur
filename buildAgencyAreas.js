@@ -5,7 +5,7 @@ import { getAgencies } from 'gtfs'
 import { buildAgencySymbolicGeojsons } from './buildAgencyGeojsons.js'
 import enrichAgencyMeta from './enrichAgencyMeta.js'
 
-export const buildAgencyAreas = (db, cache, runtimeCache) => {
+export const buildAgencyAreas = (db, cache, runtimeCache = null) => {
   //console.time('Traitement des agences')
   //TODO should be store in the DB, but I'm not yet fluent using node-GTFS's DB
   // so I use a cache library which does a great job but needs to be doubled by an in-memory cache which is also fine and simpler than a relational DB
@@ -102,9 +102,11 @@ export const buildAgencyAreas = (db, cache, runtimeCache) => {
   cache
     .set('agencyAreas', agencyAreas)
     .then((result) => {
-      runtimeCache.agencyAreas = agencyAreas // This because retrieving the cache takes 1 sec
-      //console.timeLog('Traitement des agences')
-      console.log('Cache enregistré')
+      if (runtimeCache != null) {
+        runtimeCache.agencyAreas = agencyAreas // This because retrieving the cache takes 1 sec
+        //console.timeLog('Traitement des agences')
+        console.log('Cache enregistré')
+      }
     })
     .catch((err) => console.log("Erreur dans l'enregistrement du cache"))
 

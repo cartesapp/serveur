@@ -1,0 +1,89 @@
+import { exec as rawExec } from 'child_process'
+import express from 'express'
+import { closeDb, importGtfs, openDb, updateGtfsRealtime } from 'gtfs'
+import { dateHourMinutes } from './utils.js'
+export const exec = util.promisify(rawExec)
+const app = express()
+const secretKey = process.env.SECRET_KEY
+import cache from './cache.ts'
+import readConfig from './readConfig.js'
+import { buildAgencyAreas } from './buildAgencyAreas.js'
+
+const parseGTFS = async (newDbName) => {
+  //console.time('Parse GTFS')
+  const config = await readConfig()
+  console.log('will load GTFS files in node-gtfs')
+  config.sqlitePath = 'db/' + newDbName
+  await importGtfs(config)
+  await updateGtfsRealtime(config)
+  //console.timeEnd('Parse GTFS')
+  return "C'est bon !"
+}
+app.get('/update/:givenSecretKey', async (req, res) => {
+  if (secretKey !== req.params.givenSecretKey) {
+    return res
+      .status(401)
+      .send("Wrong auth secret key, you're not allowed to do that")
+  }
+  try {
+    const oldDb = openDb(config)
+    console.log('Will build config')
+    const { stdout, stderr } = await exec('npm run build-config')
+    console.log('-------------------------------')
+    console.log('Build config OK')
+    console.log('stdout:', stdout)
+    console.log('stderr:', stderr)
+
+    // Motis is incredibly fast compared to node-GTFS
+    // Hence do it first now that the data is up to date
+    // TODO sudo... https://unix.stackexchange.com/questions/606452/allowing-user-to-run-systemctl-systemd-services-without-password/606476#606476
+    try {
+      const { stdout2, stderr2 } = await exec(
+        'sudo systemctl restart motis.service'
+      )
+      console.log('-------------------------------')
+      console.log('Restart Motis OK')
+      console.log('stdout:', stdout2)
+      console.log('stderr:', stderr2)
+    } catch (e) {
+      console.log(
+        'Could not restart Motis. Could be a problem of sudo password or a test environment. Details : ',
+        e
+      )
+    }
+
+    const newDbName = dateHourMinutes()
+    cache.set('dbName', newDbName)
+    await parseGTFS(newDbName)
+
+    console.log('-------------------------------')
+    console.log(`Parsed GTFS in new node-gtfs DB ${newDbName} OK`)
+
+    console.log(
+      'Will build agency areas, long not optimized step for now, ~ 30 minutes for SNCF + STAR + TAN'
+    )
+    //waiting to close makes all other routes unavailable because of multiple connections ?
+    closeDb(oldDb)
+    const db = openDb(config)
+    buildAgencyAreas(db, cache)
+
+    //apicache.clear()
+    const { stdout4, stderr4 } = await exec(
+      `find db/ ! -name '${newDbName}' -type f -exec rm -f {} +`
+    )
+    console.log('-------------------------------')
+    console.log('Removed older dbs')
+    console.log('stdout:', stdout4)
+    console.log('stderr:', stderr4)
+
+    closeDb(db)
+    console.log('Done updating 😀')
+    res.send({ ok: true })
+  } catch (e) {
+    console.log(
+      "Couldn't update the GTFS server, or the Motis service. Please investigate.",
+      e
+    )
+    res.send({ ok: false })
+  }
+})
