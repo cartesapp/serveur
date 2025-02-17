@@ -1,14 +1,15 @@
 import { exec as rawExec } from 'child_process'
+import 'dotenv/config'
 import express from 'express'
 import { closeDb, importGtfs, openDb, updateGtfsRealtime } from 'gtfs'
-import { dateHourMinutes } from './utils.js'
 import util from 'util'
+import { buildAgencyAreas } from './buildAgencyAreas.js'
+import cache from './cache.ts'
+import { readConfig, writeConfig } from './readConfig.ts'
+import { dateHourMinutes } from './utils.js'
 export const exec = util.promisify(rawExec)
 const app = express()
 const secretKey = process.env.SECRET_KEY
-import cache from './cache.ts'
-import { readConfig, writeConfig } from './readConfig.ts'
-import { buildAgencyAreas } from './buildAgencyAreas.js'
 
 const parseGTFS = async (newDbName) => {
   //console.time('Parse GTFS')
