@@ -113,5 +113,5 @@ app.get('/update/:givenSecretKey', async (req, res) => {
 
 const port = process.env.PORT || 3002
 app.listen(port, () => {
-  console.log(`Cartes.app GTFS server listening on port ${port}`)
+  console.log(`Cartes.app udpate server listening on port ${port}`)
 })

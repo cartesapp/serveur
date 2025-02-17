@@ -31,7 +31,6 @@ datasets:
   - slug: base-de-donnees-multimodale-transports-publics-en-bretagne-korrigo-gtfs
     prefix: fr-bre
     prefixServiceIds: true
-    onlyMe: uoi
   # Centre-Val-de-Loire
   - slug: arrets-itineraires-et-horaires-theoriques-des-reseaux-de-transport-des-membres-de-jvmalin
     prefix: fr-cvl
@@ -70,7 +69,6 @@ datasets:
   # Grenoble
   - slug: horaires-theoriques-du-reseau-tag
     prefix: fr-grenoble
-    onlyMe: uoi
     note: Ce réseau est marqué comme "archivé" sur TDGV, mais semble pourtant bien fonctionnel
   # Lyon (réseau TCL)
   - slug: horaires-theoriques-du-reseau-transports-en-commun-lyonnais
