@@ -6,7 +6,7 @@ export const exec = util.promisify(rawExec)
 const app = express()
 const secretKey = process.env.SECRET_KEY
 import cache from './cache.ts'
-import readConfig from './readConfig.js'
+import { readConfig, writeConfig } from './readConfig.js'
 import { buildAgencyAreas } from './buildAgencyAreas.js'
 
 const parseGTFS = async (newDbName) => {
@@ -16,9 +16,13 @@ const parseGTFS = async (newDbName) => {
   config.sqlitePath = 'db/' + newDbName
   await importGtfs(config)
   await updateGtfsRealtime(config)
+
+  await writeConfig(config)
+
   //console.timeEnd('Parse GTFS')
   return "C'est bon !"
 }
+
 app.get('/update/:givenSecretKey', async (req, res) => {
   if (secretKey !== req.params.givenSecretKey) {
     return res
@@ -26,7 +30,6 @@ app.get('/update/:givenSecretKey', async (req, res) => {
       .send("Wrong auth secret key, you're not allowed to do that")
   }
   try {
-    const oldDb = openDb(config)
     console.log('Will build config')
     const { stdout, stderr } = await exec('npm run build-config')
     console.log('-------------------------------')
@@ -53,7 +56,6 @@ app.get('/update/:givenSecretKey', async (req, res) => {
     }
 
     const newDbName = dateHourMinutes()
-    cache.set('dbName', newDbName)
     await parseGTFS(newDbName)
 
     console.log('-------------------------------')
@@ -62,11 +64,16 @@ app.get('/update/:givenSecretKey', async (req, res) => {
     console.log(
       'Will build agency areas, long not optimized step for now, ~ 30 minutes for SNCF + STAR + TAN'
     )
+    const config = await readConfig()
     //waiting to close makes all other routes unavailable because of multiple connections ?
-    closeDb(oldDb)
     const db = openDb(config)
     buildAgencyAreas(db, cache)
 
+    const { stdout35, stderr35 } = await exec(`pm2 delete serveur`)
+    console.log('-------------------------------')
+    console.log('Stopped the serveur')
+    console.log('stdout:', stdout35)
+    console.log('stderr:', stderr35)
     //apicache.clear()
     const { stdout4, stderr4 } = await exec(
       `find db/ ! -name '${newDbName}' -type f -exec rm -f {} +`
@@ -75,6 +82,14 @@ app.get('/update/:givenSecretKey', async (req, res) => {
     console.log('Removed older dbs')
     console.log('stdout:', stdout4)
     console.log('stderr:', stderr4)
+
+    const { stdout5, stderr5 } = await exec(
+      `pm2 start "npm run start" --name "serveur"`
+    )
+    console.log('-------------------------------')
+    console.log('Restarted the serveur')
+    console.log('stdout:', stdout5)
+    console.log('stderr:', stderr5)
 
     closeDb(db)
     console.log('Done updating 😀')

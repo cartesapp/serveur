@@ -5,7 +5,6 @@ import cors from 'cors'
 import 'dotenv/config'
 import express from 'express'
 import { readFile } from 'fs/promises'
-import readConfig from './readConfig.js'
 import {
   closeDb,
   getAgencies,
@@ -24,6 +23,7 @@ import {
 } from 'gtfs'
 import util from 'util'
 import { buildAgencySymbolicGeojsons } from './buildAgencyGeojsons.js'
+import { readConfig } from './readConfig.js'
 import {
   download,
   liveExec,
@@ -33,7 +33,6 @@ import {
 import {
   areDisjointBboxes,
   bboxArea,
-  dateHourMinutes,
   filterFeatureCollection,
   joinFeatureCollections,
   rejectNullValues,
@@ -72,15 +71,7 @@ cache
   })
   .catch((err) => console.log('Erreur dans le chargement du runtime cache'))
 
-await readConfig()
-
-let dbName = await cache.get('dbName', null)
-if (!dbName) {
-  dbName = dateHourMinutes()
-  await cache.set('dbName', dbName)
-}
-config.sqlitePath = 'db/' + dbName
-console.log(`set db name ${dbName} from disc cache`)
+const config = await readConfig()
 
 const app = express()
 app.use(
