@@ -3,11 +3,11 @@
   "license": "AGPL-3.0-or-later",
   "scripts": {
     "build-config": "deno run --allow-net --allow-env --allow-read --allow-write --allow-run buildConfig.ts",
-    "start": "node --max-old-space-size=16384 --experimental-strip-types --watch server.js",
+    "start": "node --max-old-space-size=16384 --experimental-strip-types --watch server.ts",
     "update": "node --max-old-space-size=16384 --experimental-strip-types --watch update.ts"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "dependencies": {
     "@mapbox/polyline": "^1.2.1",
