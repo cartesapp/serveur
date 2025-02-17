@@ -61,11 +61,9 @@ wget https://panoramax.openstreetmap.fr/pmtiles/planet.pmtiles
 
 Dans le fichier [cycleHighways](https://github.com/cartesapp/serveur/blob/master/cycleHighways.ts#L13-L26) sont définies les requêtes OSM qui renvoient les REV. En effet, ces derniers ne sont pas encore structurés par la communauté OSM en un seul tag national, voir [cette discussion](https://forum.openstreetmap.fr/t/numerisation-des-reseaux-velo-structurants/17214).
 
-À vous d'ajouter les réseaux de votre ville pour qu'ils s'affichent sur la carte comme une infrastructure de premier niveau. C'est un changement relativement discret qui fait pourtant toute la différence en matière de planification des transports. On voit notamment qu'à date de décembre 2024, Rennes pêche énormément par le manque de REV *dans* la ville coeur alors que ses accès depuis la métropole sont plutôt bons. 
+À vous d'ajouter les réseaux de votre ville pour qu'ils s'affichent sur la carte comme une infrastructure de premier niveau. C'est un changement relativement discret qui fait pourtant toute la différence en matière de planification des transports. On voit notamment qu'à date de décembre 2024, Rennes pêche énormément par le manque de REV _dans_ la ville coeur alors que ses accès depuis la métropole sont plutôt bons.
 
 ![image](https://github.com/user-attachments/assets/09d1cd3a-a2ab-48d7-ab50-8e0b3508bf5c)
-
-
 
 ## API des horaires et lignes de bus en France (standard GTFS)
 
@@ -89,9 +87,11 @@ Lancer le calcul sur votre machine avec les instructions suivantes est possible,
 
 ### Faire tourner ce serveur en local
 
-Toutes les étapes sont résumées dans [la route `update` du `server.js`](https://github.com/cartesapp/serveur/blob/master/server.js#L575).
+Nous avons deux serveurs : le `server.ts` principal qui sert les données en lecture, et le serveur `update.ts` qui vient les mettre à jour et relancer le serveur de lecture, pour éviter de le faire tomber s'il tombe lui-même lors des longues mises à jour journalières. Enfin nocturnes.
 
-Donc quand le serveur tourne, charger `/update` va relancer le téléchargement, l'intégration dans Motis et le calcul des plans de transport !
+Toutes les étapes sont résumées dans [`update.ts`](https://github.com/cartesapp/serveur/blob/master/server.js#L575).
+
+Donc quand le serveur tourne, charger `/update` avec la clef de sécurité en variable d'environnement va relancer le téléchargement, l'intégration dans Motis et le calcul des plans de transport !
 
 D'abord lancer le téléchargement des fichiers GTFS et la création de la configuration node-GTFS.
 
