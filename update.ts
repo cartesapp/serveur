@@ -70,11 +70,17 @@ app.get('/update/:givenSecretKey', async (req, res) => {
     const db = openDb(config)
     buildAgencyAreas(db, cache)
 
-    const { stdout35, stderr35 } = await exec(`pm2 delete serveur`)
-    console.log('-------------------------------')
-    console.log('Stopped the serveur')
-    console.log('stdout:', stdout35)
-    console.log('stderr:', stderr35)
+    try {
+      const { stdout35, stderr35 } = await exec(`pm2 delete serveur`)
+      console.log('-------------------------------')
+      console.log('Stopped the serveur')
+      console.log('stdout:', stdout35)
+      console.log('stderr:', stderr35)
+    } catch (e) {
+      console.log(
+        'Could not delete pm2 serveur, it may not have been started yet. Will start it.'
+      )
+    }
     //apicache.clear()
     const { stdout4, stderr4 } = await exec(
       `find db/ ! -name '${newDbName}' -type f -exec rm -f {} +`
