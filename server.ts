@@ -1,5 +1,4 @@
 import turfDistance from '@turf/distance'
-import apicache from 'apicache'
 import { exec as rawExec } from 'child_process'
 import compression from 'compression'
 import cors from 'cors'
@@ -19,12 +18,12 @@ import {
   getStopsAsGeoJSON,
   getStoptimes,
   getTrips,
-  importGtfs,
   openDb,
   updateGtfsRealtime,
 } from 'gtfs'
 import util from 'util'
 import { buildAgencySymbolicGeojsons } from './buildAgencyGeojsons.js'
+import { readConfig } from './readConfig.ts'
 import {
   download,
   liveExec,
@@ -34,7 +33,6 @@ import {
 import {
   areDisjointBboxes,
   bboxArea,
-  dateHourMinutes,
   filterFeatureCollection,
   joinFeatureCollections,
   rejectNullValues,
@@ -42,11 +40,15 @@ import {
 
 import placeMapRoute from './placeMap.js'
 
+/*
+// Probably disactivated because the API is not stable enough yet
+// TODO reactivate it to scale
+import apicache from 'apicache'
 let cacheMiddleware = apicache.middleware
+*/
 
 export const exec = util.promisify(rawExec)
 
-import Cache from 'file-system-cache'
 import { buildAgencyAreas } from './buildAgencyAreas.js'
 import {
   dateFromString,
@@ -56,11 +58,7 @@ import {
   isMorning,
 } from './timetableAnalysis.js'
 
-const month = 60 * 60 * 24 * 30
-const cache = Cache.default({
-  basePath: './.cache', // (optional) Path where cache files are stored (default).
-  ttl: month, // (optional) A time-to-live (in secs) on how long an item remains cached.
-})
+import cache from './cache.ts'
 
 const runtimeCache = { agencyAreas: null }
 // This because retrieving the cache takes 1 sec
@@ -73,24 +71,9 @@ cache
   })
   .catch((err) => console.log('Erreur dans le chargement du runtime cache'))
 
-let config
+const config = await readConfig()
 
-const readConfig = async () => {
-  const newConfig = await JSON.parse(
-    await readFile(new URL('./config.json', import.meta.url))
-  )
-  config = newConfig
-  return newConfig
-}
-await readConfig()
-
-let dbName = await cache.get('dbName', null)
-if (!dbName) {
-  dbName = dateHourMinutes()
-  await cache.set('dbName', dbName)
-}
-config.sqlitePath = 'db/' + dbName
-console.log(`set db name ${dbName} from disc cache`)
+console.log(`Using config file `, JSON.stringify(config))
 
 const app = express()
 app.use(
@@ -146,17 +129,6 @@ app.get('/elections-legislatives-2024/:circo', (req, res) => {
 })
 
 const port = process.env.PORT || 3001
-
-const parseGTFS = async (newDbName) => {
-  //console.time('Parse GTFS')
-  const config = await readConfig()
-  console.log('will load GTFS files in node-gtfs')
-  config.sqlitePath = 'db/' + newDbName
-  await importGtfs(config)
-  await updateGtfsRealtime(config)
-  //console.timeEnd('Parse GTFS')
-  return "C'est bon !"
-}
 
 // This code enables testing quickly with yarn start our optimisations of node-gtfs
 /*
@@ -636,85 +608,8 @@ app.get('/geoStops/:lat/:lon/:distance', (req, res) => {
   }
 })
 
-//parseGTFS(Math.random())
-
-/* Update the DB from the local GTFS files */
-app.get('/parse', async (req, res) => {
-  const alors = await parseGTFS(dateHourMinutes())
-
-  res.send(alors)
-})
-
 const secretKey = process.env.SECRET_KEY
 
-app.get('/update/:givenSecretKey', async (req, res) => {
-  if (secretKey !== req.params.givenSecretKey) {
-    return res
-      .status(401)
-      .send("Wrong auth secret key, you're not allowed to do that")
-  }
-  try {
-    const oldDb = openDb(config)
-    console.log('Will build config')
-    const { stdout, stderr } = await exec('npm run build-config')
-    console.log('-------------------------------')
-    console.log('Build config OK')
-    console.log('stdout:', stdout)
-    console.log('stderr:', stderr)
-
-    // Motis is incredibly fast compared to node-GTFS
-    // Hence do it first now that the data is up to date
-    // TODO sudo... https://unix.stackexchange.com/questions/606452/allowing-user-to-run-systemctl-systemd-services-without-password/606476#606476
-    try {
-      const { stdout2, stderr2 } = await exec(
-        'sudo systemctl restart motis.service'
-      )
-      console.log('-------------------------------')
-      console.log('Restart Motis OK')
-      console.log('stdout:', stdout2)
-      console.log('stderr:', stderr2)
-    } catch (e) {
-      console.log(
-        'Could not restart Motis. Could be a problem of sudo password or a test environment. Details : ',
-        e
-      )
-    }
-
-    const newDbName = dateHourMinutes()
-    cache.set('dbName', newDbName)
-    await parseGTFS(newDbName)
-
-    console.log('-------------------------------')
-    console.log(`Parsed GTFS in new node-gtfs DB ${newDbName} OK`)
-
-    console.log(
-      'Will build agency areas, long not optimized step for now, ~ 30 minutes for SNCF + STAR + TAN'
-    )
-    //waiting to close makes all other routes unavailable because of multiple connections ?
-    closeDb(oldDb)
-    const db = openDb(config)
-    buildAgencyAreas(db, cache, runtimeCache)
-
-    apicache.clear()
-    const { stdout4, stderr4 } = await exec(
-      `find db/ ! -name '${newDbName}' -type f -exec rm -f {} +`
-    )
-    console.log('-------------------------------')
-    console.log('Removed older dbs')
-    console.log('stdout:', stdout4)
-    console.log('stderr:', stderr4)
-
-    closeDb(db)
-    console.log('Done updating 😀')
-    res.send({ ok: true })
-  } catch (e) {
-    console.log(
-      "Couldn't update the GTFS server, or the Motis service. Please investigate.",
-      e
-    )
-    res.send({ ok: false })
-  }
-})
 app.get(
   '/update-tiles/:zone/:givenSecretKey/:noDownload?',
   async (req, res) => {

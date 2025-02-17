@@ -3,10 +3,11 @@
   "license": "AGPL-3.0-or-later",
   "scripts": {
     "build-config": "deno run --allow-net --allow-env --allow-read --allow-write --allow-run buildConfig.ts",
-    "start": "node --max-old-space-size=16384 --watch server.js"
+    "start": "node --max-old-space-size=16384 --experimental-strip-types --watch server.ts",
+    "update": "node --max-old-space-size=16384 --experimental-strip-types --watch update.ts"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "dependencies": {
     "@mapbox/polyline": "^1.2.1",
@@ -27,8 +28,11 @@
     "multi-progress-bars": "^5.0.3",
     "osmtogeojson": "^3.0.0-beta.5",
     "progress": "^2.0.3",
-    "toposort": "^2.0.2"
+    "toposort": "^2.0.2",
+    "ts-node": "^10.9.2"
   },
-  "devDependencies": { "typescript": "^5.3.3" },
+  "devDependencies": {
+    "typescript": "^5.7.3"
+  },
   "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }
