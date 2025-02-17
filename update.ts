@@ -2,11 +2,12 @@ import { exec as rawExec } from 'child_process'
 import express from 'express'
 import { closeDb, importGtfs, openDb, updateGtfsRealtime } from 'gtfs'
 import { dateHourMinutes } from './utils.js'
+import util from 'util'
 export const exec = util.promisify(rawExec)
 const app = express()
 const secretKey = process.env.SECRET_KEY
 import cache from './cache.ts'
-import { readConfig, writeConfig } from './readConfig.js'
+import { readConfig, writeConfig } from './readConfig.ts'
 import { buildAgencyAreas } from './buildAgencyAreas.js'
 
 const parseGTFS = async (newDbName) => {
@@ -101,4 +102,9 @@ app.get('/update/:givenSecretKey', async (req, res) => {
     )
     res.send({ ok: false })
   }
+})
+
+const port = process.env.PORT || 3002
+app.listen(port, () => {
+  console.log(`Cartes.app GTFS server listening on port ${port}`)
 })

@@ -21,8 +21,7 @@
     "npm:gtfs@^4.15.1": "4.15.5",
     "npm:multi-progress-bars@^5.0.3": "5.0.3",
     "npm:progress@^2.0.3": "2.0.3",
-    "npm:toposort@^2.0.2": "2.0.2",
-    "npm:typescript@^5.3.3": "5.6.3"
+    "npm:toposort@^2.0.2": "2.0.2"
   },
   "jsr": {
     "@std/cli@1.0.6": {
@@ -2128,9 +2127,6 @@
         "ts-toolbelt"
       ]
     },
-    "typescript@5.6.3": {
-      "integrity": "sha512-hjcS1mhfuyi4WW8IWtjP7brDrG2cuDZukyrYrSauoXGNgx0S7zceP07adYkJycEr56BOUTNPzbInooiN3fn1qw=="
-    },
     "uc.micro@2.1.0": {
       "integrity": "sha512-ARDJmphmdvUk6Glw7y9DQ2bFkKBHwQHLi2lsaH6PPmz/Ka9sFOBsBluozhDltWmnv9u/cF6Rt87znRTPV+yp/A=="
     },
@@ -2423,7 +2419,8 @@
         "npm:osmtogeojson@^3.0.0-beta.5",
         "npm:progress@^2.0.3",
         "npm:toposort@^2.0.2",
-        "npm:typescript@^5.3.3"
+        "npm:ts-node@^10.9.2",
+        "npm:typescript@^5.7.3"
       ]
     }
   }

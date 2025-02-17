@@ -23,7 +23,7 @@ import {
 } from 'gtfs'
 import util from 'util'
 import { buildAgencySymbolicGeojsons } from './buildAgencyGeojsons.js'
-import { readConfig } from './readConfig.js'
+import { readConfig } from './readConfig.ts'
 import {
   download,
   liveExec,
@@ -72,6 +72,8 @@ cache
   .catch((err) => console.log('Erreur dans le chargement du runtime cache'))
 
 const config = await readConfig()
+
+console.log(`Using config file `, JSON.stringify(config))
 
 const app = express()
 app.use(
