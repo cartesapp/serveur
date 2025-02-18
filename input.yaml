@@ -135,6 +135,9 @@ datasets:
   # Métropole Montpellier
   - slug: offre-de-transport-de-montpellier-mediterranee-metropole-tam-gtfs
     prefix: fr-montpellier
+  # Métropole Toulon Provence Méditerranée
+  - slug: reseau-de-transport-urbain-de-la-metropole-toulon-provence-mediterranee
+    prefix: fr-toulon
 
   # Vannes
   - slug: reseau-urbain-kiceo
