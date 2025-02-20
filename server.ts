@@ -367,22 +367,66 @@ app.get('/immediateStopTimes/:ids/:day/:from/:to', (req, res) => {
     const requestText = `immediate stoptimes for day ${day} date ${from} up to ${to} and stops ${req.params.ids}`
     //console.time(requestText)
 
-    //TODO this only works with calendarDates
-    const stopTimes = db
-      //INNER JOIN calendar ON calendar.service_id = trips.service_id
-      .prepare(
-        `
-SELECT * FROM stop_times 
-INNER JOIN calendar_dates ON calendar_dates.service_id = trips.service_id
-INNER JOIN trips ON stop_times.trip_id = trips.trip_id
+    // nouvelle requête en préparation
+    try {
+      const stopTimesCalendar = db
+        .prepare(
+          `
+SELECT *
+FROM trips
+JOIN stop_times ON trips.trip_id = stop_times.trip_id
 INNER JOIN routes ON routes.route_id = trips.route_id
-WHERE stop_id = ? AND departure_time > '${from}' AND departure_time < '${to}' AND date = '${day}' AND exception_type = 1;`
-      )
-      .all(ids)
+WHERE stop_times.stop_id = @stopId
+AND stop_times.arrival_time BETWEEN @timeFrom AND @timeTo
+AND (
+        EXISTS (
+            SELECT 1
+            FROM calendar
+            WHERE calendar.service_id = trips.service_id
+            AND (
+                (calendar.monday = 1 AND strftime('%w', @dateHyphen) = '1') OR
+                (calendar.tuesday = 1 AND strftime('%w', @dateHyphen) = '2') OR
+                (calendar.wednesday = 1 AND strftime('%w', @dateHyphen) = '3') OR
+                (calendar.thursday = 1 AND strftime('%w', @dateHyphen) = '4') OR
+                (calendar.friday = 1 AND strftime('%w', @dateHyphen) = '5') OR
+                (calendar.saturday = 1 AND strftime('%w', @dateHyphen) = '6') OR
+                (calendar.sunday = 1 AND strftime('%w', @dateHyphen) = '0')
+            )
+            AND @date BETWEEN calendar.start_date AND calendar.end_date
+        )
+        OR EXISTS (
+            SELECT 1
+            FROM calendar_dates
+            WHERE calendar_dates.service_id = trips.service_id
+            AND calendar_dates.date = @date
+            AND calendar_dates.exception_type = 1
+        )
+    )
+    AND NOT EXISTS (
+        SELECT 1
+        FROM calendar_dates
+        WHERE calendar_dates.service_id = trips.service_id
+        AND calendar_dates.date = @date
+        AND calendar_dates.exception_type = 2
+    );
+`
+        )
+        .all({
+          stopId: ids[0],
+          date: day,
+          dateHyphen:
+            day.slice(0, 4) + '-' + day.slice(4, 6) + '-' + day.slice(6, 8),
+          timeFrom: from,
+          timeTo: to,
+        })
 
+      closeDb(db)
+      return res.json(stopTimesCalendar.map(rejectNullValues))
+    } catch (e) {
+      console.error('oups', e)
+      closeDb(db)
+    }
     closeDb(db)
-    //console.timeEnd(requestText)
-    return res.json(stopTimes.map(rejectNullValues))
   } catch (e) {
     console.error(e)
   }

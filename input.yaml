@@ -15,6 +15,8 @@
 #
 # Certains jeux de données, comme bzh et pdll, colisionnent sur leurs service_ids, d'où le besoin de les préfixer avec l'option prefixServiceIds.
 # Attention cependant à ne pas activer l'option prefixServiceIds quand ce n'est pas nécessaire car cela semble faire disparaitre les BlaBlaBus et FlixBus
+# Note : il semble que depuis l'implémentation de cette option, on ait décidé de tout préfixer via node-GTFS. L'activer provoquerait donc un double préfixage
+# Soyez-donc vigileants sur les options de préfixage
 
 # Astuce pour débugguer : l'attribut "onlyMe" va permettre d'ignorer temporairement tous les autres jeux sans devoir les commenter ou supprimer un par un du fichier
 #
@@ -30,7 +32,6 @@ datasets:
   # Bretagne
   - slug: base-de-donnees-multimodale-transports-publics-en-bretagne-korrigo-gtfs
     prefix: fr-bre
-    prefixServiceIds: true
   # Centre-Val-de-Loire
   - slug: arrets-itineraires-et-horaires-theoriques-des-reseaux-de-transport-des-membres-de-jvmalin
     prefix: fr-cvl
@@ -50,7 +51,6 @@ datasets:
   # Pays de la Loire
   - slug: arrets-horaires-et-circuits-des-lignes-de-transports-en-commun-en-pays-de-la-loire-gtfs-destineo-reseaux-aom-aleop-1
     prefix: fr-pdl
-    prefixServiceIds: true
   # Provence-Alpes-Côte d'Azur
   - slug: lignes-des-reseaux-transport-zou-provence-alpes-cote-d-azur-proximite-3-3
     prefix: fr-pac-proximite

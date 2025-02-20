@@ -26,7 +26,7 @@ export const prefixGtfsColumnValues = async (csvFileName, prefix, column) => {
   }
 }
 
-const serviceIdFiles = ['calendar_dates.txt', 'calendars.txt', 'trips.txt']
+const serviceIdFiles = ['calendar_dates.txt', 'calendar.txt', 'trips.txt']
 
 export const prefixGtfsServiceIds = (gtfsDir, prefix) => {
   serviceIdFiles.forEach((filename) => {
