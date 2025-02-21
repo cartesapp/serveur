@@ -452,13 +452,18 @@ app.get('/stopTimes/:ids/:day?', (req, res) => {
 
         const orderedTripStoptimeIds = getStoptimes(
           { trip_id },
-
           ['stop_id'],
           [['stop_sequence', 'ASC']]
         ).map((stoptime) => stoptime.stop_id)
-        const stopNames = getStops({ stop_id: orderedTripStoptimeIds }).map(
-          (stop) => stop.stop_name
+
+        const idNameMap = Object.fromEntries(
+          getStops({ stop_id: orderedTripStoptimeIds }).map((stop) => [
+            stop.stop_id,
+            stop.stop_name,
+          ])
         )
+
+        const stopNames = orderedTripStoptimeIds.map((id) => idNameMap[id])
 
         const destination = stopNames[stopNames.length - 1],
           origin = stopNames[0]
