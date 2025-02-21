@@ -447,13 +447,32 @@ app.get('/stopTimes/:ids/:day?', (req, res) => {
       })
       const stopTrips = stops.map((stop) => stop.trip_id)
 
-      const trips = getTrips({ trip_id: stopTrips }).map((trip) => ({
-        ...trip,
-        frequencies: getFrequencies({ trip_id: trip.trip_id }),
-        calendar: getCalendars({ service_id: trip.service_id }),
-        calendarDates: getCalendarDates({ service_id: trip.service_id }),
-        //realtime: getStopTimeUpdates({ trip_id: trip.trip_id }),
-      }))
+      const trips = getTrips({ trip_id: stopTrips }).map((trip) => {
+        const { trip_id, service_id } = trip
+
+        const orderedTripStoptimeIds = getStoptimes(
+          { trip_id },
+
+          ['stop_id'],
+          [['stop_sequence', 'ASC']]
+        ).map((stoptime) => stoptime.stop_id)
+        const stopNames = getStops({ stop_id: orderedTripStoptimeIds }).map(
+          (stop) => stop.stop_name
+        )
+
+        const destination = stopNames[stopNames.length - 1],
+          origin = stopNames[0]
+
+        return {
+          ...trip,
+          frequencies: getFrequencies({ trip_id }),
+          calendar: getCalendars({ service_id }),
+          calendarDates: getCalendarDates({ service_id }),
+          destination,
+          origin,
+          //realtime: getStopTimeUpdates({ trip_id: trip.trip_id }),
+        }
+      })
 
       const tripRoutes = trips.reduce(
         (memo, next) => [...memo, next.route_id],
