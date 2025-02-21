@@ -643,6 +643,11 @@ app.get('/geoStops/:lat/:lon/:distance', (req, res) => {
         .filter((stop) => {
           return !stop.location_type
         })
+        .map((stop) => ({
+          ...stop,
+          distance: turfDistance([lon, lat], [stop.stop_lon, stop.stop_lat]),
+        }))
+        .sort((a, b) => a.distance - b.distance)
         .map(rejectNullValues)
     )
 
