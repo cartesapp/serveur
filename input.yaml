@@ -138,6 +138,9 @@ datasets:
   # Métropole Toulon Provence Méditerranée
   - slug: reseau-de-transport-urbain-de-la-metropole-toulon-provence-mediterranee
     prefix: fr-toulon
+  # Métropole Clermont Ferrand (réseau T2C)
+  -slug: syndicat-mixte-des-transports-en-commun-de-lagglomeration-clermontoise-smtc-ac-reseau-t2c-gtfs-gtfs-rt
+   prefix: fr-clt-ferrand
 
   # Vannes
   - slug: reseau-urbain-kiceo
