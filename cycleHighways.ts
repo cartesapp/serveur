@@ -14,9 +14,9 @@ const overpassRequest = `
 area["name"="France"]->.boundaryarea;
 
 (
-nwr["cycle_network"~"FR:REV|Les Voies Lyonnaises|FR:IDF"](area.boundaryarea);
+nwr["cycle_network"~"FR:REV|Les Voies Lyonnaises|FR:IDF|ReVE"](area.boundaryarea);
 nwr["network:type"="REV Rennes Métropole"](area.boundaryarea);
-nwr[network=lcn][name~"Chronovélo |Vélostras "](area.boundaryarea);
+nwr[network=lcn][name~"Chronovélo |Vélostras |REV "](area.boundaryarea);
 
 
 nwr[cycle_highway](area.boundaryarea);
