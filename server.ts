@@ -494,14 +494,21 @@ app.get('/stopTimes/:ids/:day?', (req, res) => {
       const shapesTimeKey = 'shapes ' + id
       //console.time(shapesTimeKey)
       const features = routes
-        .map((route) => [
-          ...getShapesAsGeoJSON({
+        .map((route) => {
+          const lines = getShapesAsGeoJSON({
             route_id: route.route_id,
-          }).features,
-          ...getStopsAsGeoJSON({
-            route_id: route.route_id,
-          }).features,
-        ])
+          }).features
+
+          //I'm not what are lines used for. They used to be displayed correctly by the map even if the shapes.txt was not present.
+          //did we make our shapes up in the client ?
+          //console.log('lines', lines, route.route_id)
+          return [
+            ...lines,
+            ...getStopsAsGeoJSON({
+              route_id: route.route_id,
+            }).features,
+          ]
+        })
         .flat()
       //console.timeEnd(shapesTimeKey)
 
