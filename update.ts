@@ -70,6 +70,7 @@ app.get('/update/:givenSecretKey', async (req, res) => {
     //waiting to close makes all other routes unavailable because of multiple connections ?
     const db = openDb(config)
     buildAgencyAreas(db, cache)
+    console.log('Did build agency areas')
 
     try {
       const { stdout35, stderr35 } = await exec(`pm2 delete serveur`)
