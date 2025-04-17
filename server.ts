@@ -9,13 +9,10 @@ import {
   closeDb,
   getAgencies,
   getCalendarDates,
-  getCalendars,
-  getFrequencies,
   getRoutes,
   getShapesAsGeoJSON,
   getStopTimeUpdates,
   getStops,
-  getStopsAsGeoJSON,
   getStoptimes,
   getTrips,
   openDb,
@@ -433,7 +430,7 @@ AND (
   }
 })
 
-addStopTimesRoute(app)
+addStopTimesRoute(app, config, runtimeCache)
 
 app.get('/realtime/getStopTimeUpdates', async (req, res) => {
   const db = openDb(config)

@@ -13,12 +13,14 @@ import {
 } from 'gtfs'
 import { rejectNullValues } from '../utils.js'
 
-export default function addStopTimesRoute(app, config) {
+export default function addStopTimesRoute(app, config, runtimeCache) {
   app.get('/stopTimes/:ids/:day?', (req, res) => {
     try {
       const ids = req.params.ids.split('|')
       // TODO implement this, to reduce radically the weight of the payload returned to the client for the basic usage of displaying stop times at the present or another future date
       const day = req.params.day
+
+      const { agencyAreas } = runtimeCache
 
       const db = openDb(config)
       const results = ids.map((id) => {
@@ -77,15 +79,24 @@ export default function addStopTimesRoute(app, config) {
         //console.time(shapesTimeKey)
         const features = routes
           .map((route) => {
+            const agency = agencyAreas[route.agency_id]
+            console.log('popo', agency.polylines)
+            const polyline = agency.polylines.find(
+              (line) => line.route_id === route.route_id
+            )
+
+            /* This function will only return shapes, we think. We prefer our lines to erratic and too precise lines
             const lines = getShapesAsGeoJSON({
               route_id: route.route_id,
             }).features
+
+			*/
 
             //I'm not what are lines used for. They used to be displayed correctly by the map even if the shapes.txt was not present.
             //did we make our shapes up in the client ?
             //console.log('lines', lines, route.route_id)
             return [
-              ...lines,
+              polyline,
               ...getStopsAsGeoJSON({
                 route_id: route.route_id,
               }).features,
