@@ -65,6 +65,10 @@ Dans le fichier [cycleHighways](https://github.com/cartesapp/serveur/blob/master
 
 ![image](https://github.com/user-attachments/assets/09d1cd3a-a2ab-48d7-ab50-8e0b3508bf5c)
 
+```
+deno run --allow-net --allow-read --allow-write --allow-run cycleHighways.ts
+```
+
 ## API des horaires et lignes de bus en France (standard GTFS)
 
 On utilise node-gtfs pour parser et servir les bons JSON pour répondre aux besoins de [Cartes.app](https://github.com/cartesapp/cartes/issues/162).
