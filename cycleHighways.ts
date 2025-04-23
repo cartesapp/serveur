@@ -19,7 +19,7 @@ nwr["cycle_network"~"FR:REV|Les Voies Lyonnaises|FR:IDF"][state!=proposed](area.
 nwr["network:type"="REV Rennes Métropole"][state!=proposed](area.boundaryarea);
 nwr[network=lcn][name~"Chronovélo |Vélostras |REV "][state!=proposed](area.boundaryarea);
 
-nwr[cycle_highway](area.boundaryarea);
+nwr[cycle_highway]["state"!="proposed"](area.boundaryarea);
 );
 (._;>;);
 /*end of auto repair*/
