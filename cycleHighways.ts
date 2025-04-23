@@ -8,13 +8,14 @@ const flags = parseArgs(Deno.args, {
   negatable: ['download'],
 })
 
+// Le cycle_network=ReVE de Bordeaux n'est pas sérieux. Il intègre de ridicules bandes cyclables dans son tracé, comme avenue Jean Jaurès à Pessac.
 const overpassRequest = `
 
 [out:json];
 area["name"="France"]->.boundaryarea;
 
 (
-nwr["cycle_network"~"FR:REV|Les Voies Lyonnaises|FR:IDF|ReVE"][state!=proposed](area.boundaryarea);
+nwr["cycle_network"~"FR:REV|Les Voies Lyonnaises|FR:IDF"][state!=proposed](area.boundaryarea);
 nwr["network:type"="REV Rennes Métropole"][state!=proposed](area.boundaryarea);
 nwr[network=lcn][name~"Chronovélo |Vélostras |REV "][state!=proposed](area.boundaryarea);
 
