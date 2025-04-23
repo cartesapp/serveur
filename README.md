@@ -65,6 +65,8 @@ Dans le fichier [cycleHighways](https://github.com/cartesapp/serveur/blob/master
 
 ![image](https://github.com/user-attachments/assets/09d1cd3a-a2ab-48d7-ab50-8e0b3508bf5c)
 
+⚠️ Attention ! Ce n'est pas parce qu'une boucle vélo ou une relation OSM est classifiée "REV" que ç'en est un ! CF le commentaire sur Bordeaux près de la requête dans cycleHighways.ts. Classer REV une voie qui n'en est pas, c'est dangereux pour les cyclistes.
+
 ```
 deno run --allow-net --allow-read --allow-write --allow-run cycleHighways.ts
 ```
