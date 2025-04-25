@@ -756,7 +756,10 @@ function way_function()
 
 	-- POIs ('poi' and 'poi_detail')
 	local rank, class, subclass = GetPOIRank()
-	if rank then WritePOI(class,subclass,rank, IsMultiPolygon() and 'r' or 'w'); return end
+	
+	local isRelation = IsMultiPolygon()
+  local nwr = isRelation and 'r' or 'w'
+	if rank then WritePOI(class,subclass,rank, nwr); return end
 
 	-- Catch-all
 	if (building~="" or write_name) and Holds("name") then
