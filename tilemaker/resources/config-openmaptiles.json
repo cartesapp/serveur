@@ -9,12 +9,18 @@
       "simplify_ratio": 2
     },
 
-    "poi": { "minzoom": 10, "maxzoom": 14, "combine_polygons_below": 0 },
+    "poi": {
+      "minzoom": 10,
+      "maxzoom": 14,
+      "combine_polygons_below": 0,
+      "combine_points": false
+    },
     "poi_detail": {
       "minzoom": 14,
       "maxzoom": 14,
       "write_to": "poi",
-      "combine_polygons_below": 0
+      "combine_polygons_below": 0,
+      "combine_points": false
     },
 
     "housenumber": { "minzoom": 14, "maxzoom": 14 },
