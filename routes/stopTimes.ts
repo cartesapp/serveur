@@ -80,7 +80,6 @@ export default function addStopTimesRoute(app, config, runtimeCache) {
         const features = routes
           .map((route) => {
             const agency = agencyAreas[route.agency_id]
-            console.log('popo', agency.polylines)
             const polyline = agency.polylines.find(
               (line) => line.route_id === route.route_id
             )
