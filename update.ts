@@ -32,6 +32,7 @@ app.get('/update/:givenSecretKey', async (req, res) => {
       .send("Wrong auth secret key, you're not allowed to do that")
   }
   try {
+    console.log('GTFS update started ', new Date()
     console.log('Will build config')
     const { stdout, stderr } = await exec('npm run build-config')
     console.log('-------------------------------')
@@ -101,7 +102,7 @@ app.get('/update/:givenSecretKey', async (req, res) => {
     console.log('stderr:', stderr5)
 
     closeDb(db)
-    console.log('Done updating 😀')
+    console.log('Done updating 😀 ', new Date())
     res.send({ ok: true })
   } catch (e) {
     console.log(
