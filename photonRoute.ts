@@ -39,6 +39,8 @@ export default function photonRoute(app) {
     )
 	*/
 
+      // udpated by graphhopper every ~ 7 days on sunday at ~20h according to
+      // https://download1.graphhopper.com/public/
       if (!noDownload) {
         const url = `https://download1.graphhopper.com/public/photon-db-latest.tar.bz2`
         await download(url)
