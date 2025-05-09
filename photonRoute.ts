@@ -13,6 +13,11 @@ RestartSec=5s
 
 [Install]
 WantedBy=multi-user.target
+----
+
+Check if worked 
+journalctl -u photon.service -b -e -f
+
 */
 
 export default function photonRoute(app) {
