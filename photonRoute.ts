@@ -1,6 +1,20 @@
 import { download, liveExec } from './tiles.js'
 const secretKey = process.env.SECRET_KEY
 
+/* sudo vim /etc/systemd/system/photon.service
+ *
+[Unit]
+Description=Photon
+
+[Service]
+ExecStart=java -jar /home/ubuntu/photon-0.6.2.jar -cors-any -data-dir /home/ubuntu
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target
+*/
+
 export default function photonRoute(app) {
   app.get('/update-photon/:givenSecretKey/:noDownload', async (req, res) => {
     const { givenSecretKey, noDownload = false } = req.params
@@ -25,6 +39,8 @@ export default function photonRoute(app) {
       }
 
       await liveExec('pbzip2 -cdv photon-db-latest.tar.bz2 | tar x')
+
+      await liveExec('sudo service photon restart')
 
       console.log('-------------------------------')
       console.log('✅ Downloaded photon database 🌍️')
