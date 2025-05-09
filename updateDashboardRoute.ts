@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import { parse } from 'yaml'
+import { parse, stringify } from 'yaml'
 import { fileURLToPath } from 'url'
 
 /* This format is expected. Subjet to being enriched in the future  
@@ -27,4 +27,16 @@ export default function updateDashboardRoute(app) {
 
     res.send(jsonContents)
   })
+}
+
+//writeUpdate('photon')
+export function writeUpdate(serviceFileName) {
+  const __dirname = path.dirname(fileURLToPath(import.meta.url))
+  const file = path.resolve(__dirname, 'updates/' + serviceFileName + '.yaml')
+  const stringData = fs.readFileSync(file, 'utf8')
+  const data = parse(stringData)
+
+  const newData = { ...data, last: new Date() }
+
+  fs.writeFileSync(file, stringify(newData))
 }
