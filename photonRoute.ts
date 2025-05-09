@@ -7,7 +7,7 @@ const secretKey = process.env.SECRET_KEY
 Description=Photon
 
 [Service]
-ExecStart=java -jar /home/ubuntu/photon-0.6.2.jar -cors-any -data-dir /home/ubuntu
+ExecStart=java -jar /home/ubuntu/photon-0.6.2.jar -cors-any -data-dir /home/ubuntu/serveur
 Restart=on-failure
 RestartSec=5s
 
