@@ -3,6 +3,11 @@ import path from 'path'
 import { parse } from 'yaml'
 import { fileURLToPath } from 'url'
 
+/* This format is expected. Subjet to being enriched in the future  
+service: Moteur de recherche
+technology: Photon
+last: 2025-05-09
+*/
 export default function updateDashboardRoute(app) {
   app.get('/dashboard', async (req, res) => {
     const __dirname = path.dirname(fileURLToPath(import.meta.url))
