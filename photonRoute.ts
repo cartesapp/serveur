@@ -1,4 +1,5 @@
 import { download, liveExec } from './tiles.js'
+import { writeUpdate } from './updateDashboardRoute.js'
 const secretKey = process.env.SECRET_KEY
 
 /* sudo vim /etc/systemd/system/photon.service
@@ -47,6 +48,7 @@ export default function photonRoute(app) {
 
       await liveExec('sudo service photon restart')
 
+      writeUpdate('photon')
       console.log('-------------------------------')
       console.log('✅ Downloaded photon database 🌍️')
       return res.send({ ok: true })
