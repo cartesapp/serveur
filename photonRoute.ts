@@ -21,7 +21,7 @@ journalctl -u photon.service -b -e -f
 */
 
 export default function photonRoute(app) {
-  app.get('/update-photon/:givenSecretKey/:noDownload', async (req, res) => {
+  app.get('/update-photon/:givenSecretKey/:noDownload?', async (req, res) => {
     const { givenSecretKey, noDownload = false } = req.params
     if (givenSecretKey !== secretKey) {
       return res
