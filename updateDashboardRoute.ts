@@ -1,9 +1,11 @@
 import fs from 'fs'
 import path from 'path'
 import { parse } from 'yaml'
+import { fileURLToPath } from 'url'
 
 export default function updateDashboardRoute(app) {
   app.get('/dashboard', async (req, res) => {
+    const __dirname = path.dirname(fileURLToPath(import.meta.url))
     const updatesDirectory = path.resolve(__dirname, '../updates/')
     const files = fs.readdirSync(updatesDirectory)
     console.log(files)
