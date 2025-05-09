@@ -11,6 +11,8 @@ export const exec = util.promisify(rawExec)
 const app = express()
 const secretKey = process.env.SECRET_KEY
 
+import photonRoute from './photonRoute.ts'
+
 const parseGTFS = async (newDbName) => {
   //console.time('Parse GTFS')
   const config = await readConfig()
@@ -24,6 +26,8 @@ const parseGTFS = async (newDbName) => {
   //console.timeEnd('Parse GTFS')
   return "C'est bon !"
 }
+
+photonRoute(app)
 
 app.get('/update/:givenSecretKey', async (req, res) => {
   if (secretKey !== req.params.givenSecretKey) {
