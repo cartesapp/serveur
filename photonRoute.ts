@@ -1,5 +1,5 @@
 import { download, liveExec } from './tiles.js'
-import { writeUpdate } from './updateDashboardRoute.js'
+import { writeUpdate } from './updateDashboardRoute.ts'
 const secretKey = process.env.SECRET_KEY
 
 /* sudo vim /etc/systemd/system/photon.service
