@@ -35,3 +35,5 @@ landcover/
 *.mbtiles
 *.pbf
 .aider*
+
+updates/
