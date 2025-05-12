@@ -4,9 +4,12 @@ import { parse, stringify } from 'yaml'
 import { fileURLToPath } from 'url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const servicesJson = path.resolve(__dirname, '/services.yaml')
+const servicesFile = path.resolve(__dirname, 'services.yaml')
+const servicesJson = fs.readFileSync(servicesFile, 'utf8')
 
 const services = parse(servicesJson)
+
+console.log('Services listed : ', services.map((el) => el.service).join(' | '))
 
 export default function updateDashboardRoute(app) {
   app.get('/dashboard', async (req, res) => {
