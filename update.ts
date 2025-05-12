@@ -9,9 +9,11 @@ import { readConfig, writeConfig } from './readConfig.ts'
 import { dateHourMinutes } from './utils.js'
 export const exec = util.promisify(rawExec)
 const app = express()
+
 const secretKey = process.env.SECRET_KEY
 
 import photonRoute from './photonRoute.ts'
+import updateTilesRoute from './updateTilesRoute.ts'
 import updateDashboardRoute from './updateDashboardRoute.ts'
 
 const parseGTFS = async (newDbName) => {
@@ -30,6 +32,7 @@ const parseGTFS = async (newDbName) => {
 
 photonRoute(app)
 updateDashboardRoute(app)
+updateTilesRoute(app)
 
 app.get('/update/:givenSecretKey', async (req, res) => {
   if (secretKey !== req.params.givenSecretKey) {
