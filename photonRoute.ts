@@ -47,8 +47,11 @@ export default function photonRoute(app) {
       }
 
       await liveExec('pbzip2 -cdv photon-db-latest.tar.bz2 | tar x')
+      console.log('✅ Photon database decompressed')
 
       await liveExec('sudo service photon restart')
+
+      console.log('✅ Photon service restarted')
 
       writeUpdate('photon')
       console.log('-------------------------------')
