@@ -1,0 +1,16 @@
+# This format is expected. Subjet to being enriched in the future
+- id: photon
+  service: moteur de recherche
+  technology: Photon
+- id: tiles-france
+  service: Tuiles Hexagone
+  technology: Tilemaker/Cartes.app
+- id: tiles-planet
+  service: Tuiles planète
+  technology: Tilemaker/Panoramax
+- id: tiles-35
+  service: Tuiles de test Ille-et-Vilaine
+  technology: Tilemaker/Cartes.app
+- id: tiles-29
+  service: Tuiles de test Finistère
+  technology: Tilemaker/Cartes.app
