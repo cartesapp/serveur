@@ -3,11 +3,11 @@ import path from 'path'
 import { parse, stringify } from 'yaml'
 import { fileURLToPath } from 'url'
 
-/* This format is expected. Subjet to being enriched in the future  
-service: Moteur de recherche
-technology: Photon
-last: 2025-05-09
-*/
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const servicesJson = path.resolve(__dirname, '/services.yaml')
+
+const services = parse(servicesJson)
+
 export default function updateDashboardRoute(app) {
   app.get('/dashboard', async (req, res) => {
     const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -30,12 +30,10 @@ export default function updateDashboardRoute(app) {
 }
 
 //writeUpdate('photon')
-export function writeUpdate(serviceFileName) {
-  const __dirname = path.dirname(fileURLToPath(import.meta.url))
-  const file = path.resolve(__dirname, 'updates/' + serviceFileName + '.yaml')
-  const stringData = fs.readFileSync(file, 'utf8')
-  const data = parse(stringData)
+export function writeUpdate(serviceId) {
+  const file = path.resolve(__dirname, 'updates/' + serviceId + '.yaml')
 
+  const data = services.find((el) => el.id === serviceId)
   const newData = { ...data, last: new Date() }
 
   fs.writeFileSync(file, stringify(newData))

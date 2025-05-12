@@ -1,5 +1,6 @@
 const secretKey = process.env.SECRET_KEY
 import { updateFranceTiles, updatePlanetTiles } from './tiles.js'
+import { writeUpdate } from './updateDashboardRoute.ts'
 
 export default function updateTilesRoute(app) {
   app.get(
@@ -18,6 +19,7 @@ export default function updateTilesRoute(app) {
             '35',
             noDownload
           )
+          writeUpdate('tiles-35')
           return res.send({ ok: true })
         }
         if (zone === '29') {
@@ -26,14 +28,17 @@ export default function updateTilesRoute(app) {
             '29',
             noDownload
           )
+          writeUpdate('tiles-29')
           return res.send({ ok: true })
         }
         if (zone === 'france') {
           await updateFranceTiles(undefined, undefined, noDownload)
+          writeUpdate('tiles-france')
           return res.send({ ok: true })
         }
         if (zone === 'planet') {
           await updatePlanetTiles()
+          writeUpdate('tiles-planet')
           return res.send({ ok: true })
         }
         return res.send({ ok: false })
