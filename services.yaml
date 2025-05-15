@@ -14,3 +14,9 @@
 - id: tiles-29
   service: Tuiles de test Finistère
   technology: Tilemaker/Cartes.app
+- id: motis
+  service: Calculateur de transport en commun
+  technology: Motis
+- service: Horaires et plans de transport en commun
+  id: gtfs
+  technology: Node-GTFS/Cartes.app
