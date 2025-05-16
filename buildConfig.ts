@@ -208,10 +208,10 @@ const doFetch = async () => {
       throw err
     }
   }
-  const motisConfigFile = '../motis/config.ini'
+  const motisConfigFile = '../motis/config.yml'
   const motisConfig = buildMotisConfig(validFilenames)
   await Deno.writeTextFile(motisConfigFile, motisConfig)
-  log(`Wrote motis config file ${motisConfigFile}`)
+  log(`Wrote motis config file ${motisConfigFile} in the new v2 YAML format`)
 }
 
 await doFetch()

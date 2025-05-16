@@ -13,18 +13,16 @@ osr_footpath: true
 `)
 
 export default function (validFilenames) {
-  const datasetEntries = validFilenames
-    .map((filename) => {
-      const key = filename.path.split('/')[2].split('.gtfs')[0]
-      const path = `../serveur/${filename.path}`
-      return [
-        key,
-        {
-          path,
-        },
-      ]
-    })
-    .join('\n')
+  const datasetEntries = validFilenames.map((filename) => {
+    const key = filename.path.split('/')[2].split('.gtfs')[0]
+    const path = `../serveur/${filename.path}`
+    return [
+      key,
+      {
+        path,
+      },
+    ]
+  })
 
   const withDatasets = {
     ...baseConfig,
