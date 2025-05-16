@@ -1,10 +1,11 @@
-import { YamlLoader } from 'https://deno.land/x/yaml_loader/mod.ts'
+import { existsSync } from 'https://deno.land/std/fs/mod.ts'
+import { load } from 'https://deno.land/std@0.224.0/dotenv/mod.ts'
 import { Destination, download } from 'https://deno.land/x/download/mod.ts'
 import { exec } from 'https://deno.land/x/exec/mod.ts'
-import { existsSync } from 'https://deno.land/std/fs/mod.ts'
+import { YamlLoader } from 'https://deno.land/x/yaml_loader/mod.ts'
 import { prefixGtfsAgencyIds, prefixGtfsServiceIds } from './gtfsUtils.ts'
-import { load } from 'https://deno.land/std@0.224.0/dotenv/mod.ts'
 const env = await load()
+import buildMotisConfig from './buildMotisConfig.ts'
 
 export const log = (message, color = 'lightgreen') =>
   console.log(`%c${message}`, 'color: ' + color)
@@ -208,44 +209,8 @@ const doFetch = async () => {
     }
   }
   const motisConfigFile = '../motis/config.ini'
-  await Deno.writeTextFile(
-    motisConfigFile,
-    `modules=intermodal
-#modules=address
-#modules=tiles
-modules=ppr
-modules=nigiri
-modules=osrm
-
-intermodal.router=nigiri
-server.static_path=motis/web
-
-[nigiri]
-max_footpath_length=15
-
-[import]
-${validFilenames
-  .map(
-    (filename) =>
-      `paths=schedule-${
-        filename.path.split('/')[2].split('.gtfs')[0]
-      }:../serveur/${filename.path}`
-  )
-  .join('\n')}
-paths=osm:input/france.osm.pbf
-
-[ppr]
-profile=motis/ppr-profiles/distance_only.json
-profile=motis/ppr-profiles/default.json
-
-[osrm]
-profiles=motis/osrm-profiles/bike.lua
-profiles=motis/osrm-profiles/car.lua
-
-#[tiles]
-#profile=motis/tiles-profiles/background.lua
-`
-  )
+  const motisConfig = buildMotisConfig(validFilenames)
+  await Deno.writeTextFile(motisConfigFile, motisConfig)
   log(`Wrote motis config file ${motisConfigFile}`)
 }
 
