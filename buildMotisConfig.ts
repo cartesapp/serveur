@@ -6,7 +6,7 @@ server:
   port: 8080
   web_folder: ui
 osm: input/europe.osm.pbf
-#street_routing:
+street_routing: true
 #  elevation_data_dir: srtm/
 #geocoding: true
 osr_footpath: true
