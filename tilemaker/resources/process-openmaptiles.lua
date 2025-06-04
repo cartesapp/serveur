@@ -202,7 +202,10 @@ function node_function()
 
 	-- Write 'poi'
 	local rank, class, subclass = GetPOIRank()
-	if rank then WritePOI(class,subclass,rank,'n') end
+	local access = Find("access")
+	if rank and access ~= "private" and access ~= "no" then
+		WritePOI(class,subclass,rank,'n')
+	end
 
 	-- Write 'mountain_peak' and 'water_name'
 	local natural = Find("natural")
@@ -758,8 +761,12 @@ function way_function()
 	local rank, class, subclass = GetPOIRank()
 	
 	local isRelation = IsMultiPolygon()
-  local nwr = isRelation and 'r' or 'w'
-	if rank then WritePOI(class,subclass,rank, nwr); return end
+	local nwr = isRelation and 'r' or 'w'
+	local access = Find("access")
+	if rank and access ~= "private" and access ~= "no" then
+		WritePOI(class,subclass,rank, nwr)
+		return
+	end
 
 	-- Catch-all
 	if (building~="" or write_name) and Holds("name") then
