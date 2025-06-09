@@ -52,7 +52,14 @@ const afterFileDownload = async (resource, filename) => {
   return { path, prefix: resource.prefix, title: resource.title }
 }
 const doFetch = async () => {
-  const panRequest = await fetch('https://transport.data.gouv.fr/api/datasets/')
+  const panRequest = await fetch(
+    'https://transport.data.gouv.fr/api/datasets/',
+    {
+      headers: {
+        Authorization: 'cQHNceEBRMCOwrqBdhjwZID5-fFm00NeWCjDvLN5zF8', // Replace with your token
+      },
+    }
+  )
   const panDatasets = await panRequest.json()
 
   log(`Found ${panDatasets.length} datasets`)
