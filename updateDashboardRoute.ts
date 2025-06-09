@@ -13,6 +13,7 @@ console.log('Services listed : ', services.map((el) => el.service).join(' | '))
 
 export default function updateDashboardRoute(app) {
   app.get('/dashboard', async (req, res) => {
+    console.log('Calling dashboard route')
     const __dirname = path.dirname(fileURLToPath(import.meta.url))
     const updatesDirectory = path.resolve(__dirname, 'updates/')
     const files = fs.readdirSync(updatesDirectory)
