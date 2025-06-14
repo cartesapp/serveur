@@ -642,6 +642,9 @@ function way_function()
 	-- Set 'waterway' and associated
 	if waterwayClasses[waterway] and not is_closed then
 		if waterway == "river" and Holds("name") then
+			if isBigRiver() then
+				Layer("waterway_big", false)
+			end
 			Layer("waterway", false)
 	    Attribute("nwr", "w")
 		else
@@ -1001,3 +1004,19 @@ function split(inputstr, sep) -- https://stackoverflow.com/a/7615129/4288232
 end
 
 -- vim: tabstop=2 shiftwidth=2 noexpandtab
+
+-- Function to test if a value is in a table
+function contains(table, val)
+    for i = 1, #table do
+        if table[i] == val then
+            return true
+        end
+    end
+    return false
+end
+
+-- Function to test if a river is big (manual definition by list of names)
+bigRivers={"L'adour", "La Garonne", "La Loire", "La Meuse", "Le Rhin", "Vieux Rhin", "Rhine", "Le Rhône", "La Seine"}
+function isBigRiver()
+	return contains(bigRivers, Find("name")) or contains(bigRivers, Find("name:fr")) or contains(bigRivers, Find("name:en"))
+end
