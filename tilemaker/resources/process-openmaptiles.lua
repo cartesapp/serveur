@@ -203,7 +203,7 @@ function node_function()
 	-- Write 'poi'
 	local rank, class, subclass = GetPOIRank()
 	local access = Find("access")
-	if rank and access ~= "private" and access ~= "no" then
+	if rank and not isHiddenPrivatePOI() then
 		WritePOI(class,subclass,rank,'n')
 	end
 
@@ -690,6 +690,7 @@ function way_function()
 	end
 
 	-- Set 'water'
+	-- (therefore leisure==swimming_pool are only added in this water layer and not in the poi layer )
 	if natural=="water" or leisure=="swimming_pool" or landuse=="reservoir" or landuse=="basin" or waterClasses[waterway] then
 		if Find("covered")=="yes" or not is_closed then return end
 		local class="lake"; if waterway~="" then class="river" end
@@ -763,7 +764,7 @@ function way_function()
 	local isRelation = IsMultiPolygon()
 	local nwr = isRelation and 'r' or 'w'
 	local access = Find("access")
-	if rank and access ~= "private" and access ~= "no" then
+	if rank and not isHiddenPrivatePOI()  then
 		WritePOI(class,subclass,rank, nwr)
 		return
 	end
@@ -990,6 +991,26 @@ function SetZOrder()
 	end
 	zOrder = zOrder + hwClass
 	ZOrder(zOrder)
+end
+
+-- function to list the private POI which need to be removed from the POI layer
+function isHiddenPrivatePOI()
+	local access = Find("access")
+	if access == "private" or access == "no" then
+		--key amenity
+		local amenity = Find("amenity")
+		if amenity == "parking" then return true end
+		--key leisure (swimming_pool not listed here since they are not in the POI layer but only their geometries in the water layer)
+		local leisure = Find("leisure")
+		if leisure == "garden" then return true end
+		if leisure == "pitch" then return true end
+		if leisure == "playground" then return true end
+		--key sport
+		local sport = Find("sport")
+		if sport == "tennis" then return true end
+		if sport == "swimming" then return true end
+	end
+	return false
 end
 
 -- ==========================================================
